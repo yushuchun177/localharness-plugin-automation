@@ -3,6 +3,7 @@
   "name": "自动化任务",
   "name_en": "Automation",
   "version": "0.1.0",
+  "license": "GPL-3.0",
   "description": "定时/延时跑一句话任务，结果写进「自动化」会话。程序开着的时候生效。",
   "description_en": "Schedule prompts (one-shot or repeating) and collect results in an \"Automation\" chat while the app runs.",
   "author": "yushuchun177",
