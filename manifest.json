@@ -8,6 +8,27 @@
   "author": "yushuchun177",
   "homepage": "https://github.com/yushuchun177/localharness-plugin-automation",
   "min_app": "0.1.0",
+  "requires": {
+    "os": "全平台",
+    "deps": [
+      "llama-server"
+    ],
+    "disk": "< 1 MB",
+    "memory": "约 5 MB",
+    "network": false
+  },
+  "settings": [
+    {
+      "key": "default_minutes",
+      "label": "默认间隔（分钟）",
+      "type": "int",
+      "default": 60,
+      "help": "task_add 不填 every_minutes 时用这个",
+      "min": 1,
+      "max": 1440,
+      "unit": "分钟"
+    }
+  ],
   "tools": [
     {
       "name": "task_add",
@@ -18,28 +39,32 @@
         "delay_minutes": "float，可选，首次延迟几分钟，默认 0",
         "repeat": "bool，可选，true 表示按设置里的默认间隔重复"
       },
-      "dangerous": true
+      "dangerous": true,
+      "level": "act",
+      "needs": [
+        "定时触发",
+        "模型调用"
+      ]
     },
     {
       "name": "task_list",
       "description": "列出当前的定时任务和下次运行时间。",
-      "params": {}
+      "params": {},
+      "level": "read",
+      "needs": [
+        "定时任务"
+      ]
     },
     {
       "name": "task_cancel",
       "description": "按 id 取消任务（id 从 task_list 看）。",
       "params": {
         "id": "string"
-      }
-    }
-  ],
-  "settings": [
-    {
-      "key": "default_minutes",
-      "label": "默认间隔（分钟）",
-      "type": "int",
-      "default": 60,
-      "help": "task_add 不填 every_minutes 时用这个"
+      },
+      "level": "act",
+      "needs": [
+        "定时任务"
+      ]
     }
   ]
 }
