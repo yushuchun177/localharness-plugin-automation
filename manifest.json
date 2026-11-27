@@ -28,6 +28,20 @@
       "min": 1,
       "max": 1440,
       "unit": "分钟"
+    },
+    {
+      "key": "enabled",
+      "label": "到点自动执行",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "key": "every",
+      "label": "默认间隔（分钟）",
+      "type": "int",
+      "default": 60,
+      "min": 5,
+      "max": 1440
     }
   ],
   "commands": [
