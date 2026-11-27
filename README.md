@@ -33,6 +33,8 @@ Schedule prompts (one-shot or repeating) and collect results in an "Automation" 
 ## 设置项
 
 - **默认间隔（分钟）**（`default_minutes`，默认 `60`）task_add 不填 every_minutes 时用这个
+- **到点自动执行**（`enabled`，默认 `True`）
+- **默认间隔（分钟）**（`every`，默认 `60`）
 
 ## 权限
 
@@ -89,6 +91,8 @@ Manual: unzip this repo into `%LOCALAPPDATA%\Godot\app_userdata\Local-Harness\pl
 ## Settings
 
 - **默认间隔（分钟）** (`default_minutes`, default `60`) task_add 不填 every_minutes 时用这个
+- **到点自动执行** (`enabled`, default `True`) 
+- **默认间隔（分钟）** (`every`, default `60`) 
 
 ## Permissions
 
