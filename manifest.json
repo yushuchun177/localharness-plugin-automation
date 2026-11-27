@@ -15,7 +15,8 @@
       "params": {
         "prompt": "string，到点要执行的话",
         "every_minutes": "float，可选，每隔几分钟重复；0 表示只跑一次",
-        "delay_minutes": "float，可选，首次延迟几分钟，默认 0"
+        "delay_minutes": "float，可选，首次延迟几分钟，默认 0",
+        "repeat": "bool，可选，true 表示按设置里的默认间隔重复"
       },
       "dangerous": true
     },
@@ -27,7 +28,18 @@
     {
       "name": "task_cancel",
       "description": "按 id 取消任务（id 从 task_list 看）。",
-      "params": {"id": "string"}
+      "params": {
+        "id": "string"
+      }
+    }
+  ],
+  "settings": [
+    {
+      "key": "default_minutes",
+      "label": "默认间隔（分钟）",
+      "type": "int",
+      "default": 60,
+      "help": "task_add 不填 every_minutes 时用这个"
     }
   ]
 }
