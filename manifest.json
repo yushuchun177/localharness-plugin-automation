@@ -29,6 +29,13 @@
       "unit": "分钟"
     }
   ],
+  "commands": [
+    {
+      "name": "tasks",
+      "description": "看定时任务",
+      "usage": "/tasks"
+    }
+  ],
   "tools": [
     {
       "name": "task_add",
