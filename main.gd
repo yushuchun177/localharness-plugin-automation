@@ -218,3 +218,8 @@ func _append_to_chat(prompt: String, reply: String) -> void:
 	if f:
 		f.store_string(JSON.stringify(chat, "  "))
 		f.close()
+
+func on_command(cmd: String, args: String) -> Dictionary:
+	if cmd == "tasks":
+		return run("task_list", {})
+	return {"ok": false, "output": "未知命令"}
