@@ -29,11 +29,16 @@ func _app() -> Node:
 
 
 func _pref(key: String, def_value):
-	var ml := Engine.get_main_loop()
-	var prefs = ml.root.get_node_or_null("/root/PluginPrefs") if ml != null else null
-	if prefs == null:
+	# 直接读设置文件：在后台线程里也能用（不能碰场景树）
+	var f := FileAccess.open("user://plugin_settings.json", FileAccess.READ)
+	if f == null:
 		return def_value
-	return prefs.get_value("automation", key, def_value)
+	var obj = JSON.parse_string(f.get_as_text())
+	if not (obj is Dictionary):
+		return def_value
+	var vals: Dictionary = obj.get("values", {})
+	var mine: Dictionary = vals.get("automation", {})
+	return mine.get(key, def_value)
 
 func run(tool: String, args: Dictionary) -> Dictionary:
 	match tool:
@@ -136,23 +141,58 @@ func _tick() -> void:
 	for it in items:
 		if float(it.get("next", 0.0)) > now:
 			continue
-		var reply := _ask(str(it.get("prompt", "")))
-		if reply == "":
+		if _running_has(str(it.get("id", ""))):
 			continue
-		_append_to_chat(str(it.get("prompt", "")), reply)
+		# 到点了：丢到后台线程去跑，别把界面卡住
+		changed = true
 		var every: float = float(it.get("every", 0.0))
 		if every > 0.0:
 			it["next"] = now + every * 60.0
-			changed = true
 		else:
 			it["done"] = true
-			changed = true
+		_start_task(it)
 	if changed:
 		var keep: Array = []
 		for it in items:
 			if not bool(it.get("done", false)):
 				keep.append(it)
 		_save(keep)
+
+
+var _running: Array = []
+
+
+func _running_has(id: String) -> bool:
+	for r in _running:
+		if str(r) == id:
+			return true
+	return false
+
+
+func _start_task(it: Dictionary) -> void:
+	var id := str(it.get("id", ""))
+	var prompt := str(it.get("prompt", ""))
+	_running.append(id)
+	var th := Thread.new()
+	th.start(func():
+		var reply := _ask(prompt)
+		call_deferred("_on_task_done", id, prompt, reply))
+	# 线程对象留个引用，结束时回收
+	_threads.append(th)
+
+
+var _threads: Array = []
+
+
+func _on_task_done(id: String, prompt: String, reply: String) -> void:
+	_running.erase(id)
+	if reply != "":
+		_append_to_chat(prompt, reply)
+	for i in range(_threads.size() - 1, -1, -1):
+		var th: Thread = _threads[i]
+		if not th.is_alive():
+			th.wait_to_finish()
+			_threads.remove_at(i)
 
 
 func _ask(prompt: String) -> String:
