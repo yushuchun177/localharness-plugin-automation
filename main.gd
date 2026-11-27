@@ -27,6 +27,14 @@ func _app() -> Node:
 	return ml.root.get_node_or_null("/root/App") if ml != null else null
 
 
+
+func _pref(key: String, def_value):
+	var ml := Engine.get_main_loop()
+	var prefs = ml.root.get_node_or_null("/root/PluginPrefs") if ml != null else null
+	if prefs == null:
+		return def_value
+	return prefs.get_value("automation", key, def_value)
+
 func run(tool: String, args: Dictionary) -> Dictionary:
 	match tool:
 		"task_add":
@@ -59,6 +67,8 @@ func _add(args: Dictionary) -> Dictionary:
 	if prompt == "":
 		return {"ok": false, "output": "prompt 不能为空"}
 	var every: float = float(args.get("every_minutes", 0.0))
+	if every <= 0.0 and bool(args.get("repeat", false)):
+		every = float(_pref("default_minutes", 60))
 	var delay: float = float(args.get("delay_minutes", 0.0))
 	if every > 0.0 and delay <= 0.0:
 		delay = every
